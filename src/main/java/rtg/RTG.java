@@ -50,8 +50,8 @@ import rtg.world.gen.structure.MapGenScatteredFeatureRTG;
 import rtg.world.gen.structure.MapGenVillageRTG;
 
 
-//@Mod(modid = "RTG", name = "Realistic Terrain Generaton", version = "0.8.0d", dependencies = "required-after:Forge@[10.13.4.1448,)", acceptableRemoteVersions = "*")
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, dependencies = "required-after:Forge@[" + ModInfo.FORGE_DEP + ",)" + ModInfo.MOD_DEPS, acceptableRemoteVersions = "*")
+//@Mod(modid = "RTG", name = "Realistic Terrain Generaton", version = "0.0.1-Alk", dependencies = "required-after:Forge@[10.13.4.1448,)", acceptableRemoteVersions = "*")
+@Mod(modid = ModInfo.MOD_ID, name = ModInfo.MOD_NAME, version = ModInfo.MOD_VERSION, dependencies = "required-after:Forge@[" + ModInfo.FORGE_DEP + ",);" + ModInfo.MOD_DEPS, acceptableRemoteVersions = "*")
 public class RTG {
 
     @Instance(ModInfo.MOD_ID)

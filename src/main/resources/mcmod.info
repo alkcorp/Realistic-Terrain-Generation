@@ -1,14 +1,18 @@
-[{
-  "modid": "${modid}",
-  "name": "${name}",
-  "description": "${description}",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "${url}",
-  "updateUrl": "",
-  "authorList": [${authorList}],
-  "credits": "${credits}",
-  "logoFile": "${logoFile}",
-  "screenshots": [],
-  "dependencies": []
-}]
+[
+{
+  "modid": "RTG",
+  "name": "Realistic Terrain Generation",
+  "description": "Changes world generation to be more beautiful.",
+  "credits": "Forked from RWG by ted80. OpenSimplex Noise by KdotJPG.",
+  "logoFile": "assets/rtg/logo.png",
+  "version": "0.0.1",
+  "mcversion": "1.7.10",
+  "url": "https://github.com/AlkCorp/Realistic-Terrain-Generation",
+  "updateUrl": "https://github.com/draknyte1/GTplusplus/releases/latest",
+  "authorList": [ "Alkalus/Draknyte1" ],
+  "screenshots": [ "" ],
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]

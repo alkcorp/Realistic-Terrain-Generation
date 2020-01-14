@@ -1,8 +1,19 @@
 package rtg.world.biome.realistic;
 
+import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.CLAY;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.COAL;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.DIAMOND;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.DIRT;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.GOLD;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.GRAVEL;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.IRON;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.LAPIS;
+import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.REDSTONE;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.alkalus.debug.core.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -11,17 +22,18 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraft.world.gen.feature.WorldGenerator;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
-import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.CLAY;
-import static net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable.EventType.*;
-
 import rtg.api.biome.BiomeConfig;
 import rtg.config.rtg.ConfigRTG;
-import rtg.util.*;
+import rtg.util.CellNoise;
+import rtg.util.Logger;
+import rtg.util.OpenSimplexNoise;
+import rtg.util.PlaneLocation;
+import rtg.util.RandomUtil;
+import rtg.util.SimplexOctave;
 import rtg.world.biome.RTGBiomeProvider;
 import rtg.world.biome.WorldChunkManagerRTG;
 import rtg.world.biome.deco.DecoBase;
@@ -231,22 +243,25 @@ public class RealisticBiomeBase
         }
         
         // Surface lava lakes.
-        if (ConfigRTG.enableLavaSurfaceLakes&&!villageBuilding) {
+        if (!villageBuilding) {
             
-            if (gen && (lavaSurfaceLakeChance > 0)) {
+            if (gen) {
                 
                 int i2 = worldX+  rand.nextInt(16);// + 8;
                 int i8 = worldZ+  rand.nextInt(16);// + 8;
                 int l4 = worldObj.getHeightValue(i2, i8);
                 
-                //Surface lakes.
-                if (rand.nextInt(lavaSurfaceLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaSurfaceLakeChance) == 1)) {
-
-                    if (l4 > 63) {
-                        
-                        (new WorldGenPond(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
-                    }
+                if (MathUtils.randInt(0, 10) > 2) {
+                	 if (l4 >= 62) {
+                         net.alkalus.debug.core.Logger.INFO("Generating Lava Surface Lake");                         
+                         (new WorldGenPond(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
+                     }
                 }
+                //Surface lakes.
+				/*if (rand.nextInt(lavaSurfaceLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaSurfaceLakeChance) == 1)) {
+				
+				   
+				}*/
             }
         }
         

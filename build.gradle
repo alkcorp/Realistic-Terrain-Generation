@@ -1,68 +1,165 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {url = "http://files.minecraftforge.net/maven"}
-        maven {url = "https://oss.sonatype.org/content/repositories/snapshots/"}
+		jcenter()	
+        //maven {
+        //    name = "forge"
+        //    url = "http://files.minecraftforge.net/maven"
+        //}
+		maven {
+			name = "gt"
+			url = "https://gregtech.overminddl1.com/"
+		}	
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+		maven {
+			url = "https://plugins.gradle.org/m2/"
+		}
     }
-    dependencies {classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'}
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
+    }
 }
+
+// Because Forge is too stupid to fix Deprecation Issues, and we cannot fix it on our end! (until we fork Forge)
+allprojects {
+	tasks.withType(Javadoc) {
+		//options.compilerArgs << "-Xlint:deprecation"
+		options.addStringOption('Xdoclint:none', '-quiet')
+	}
+}
+
+apply plugin: 'eclipse'
+eclipse {
+	classpath {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
+apply plugin: 'idea'
+idea{
+	module {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
 apply plugin: 'forge'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
-ext.ref = parseprops(file('build.properties'))
+file "build.properties" withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
 
-group = ref.package_base + '.' + ref.mod_id
-archivesBaseName = ref.mod_id
-version = (System.getenv("TRAVIS") ? "1.7.10-DEV-" + System.getenv('TRAVIS_BUILD_NUMBER') : ref.mc_version + '-' + ref.mod_version)
-def versionName = (System.getenv("TRAVIS") ? "1.7.10-" + ref.mod_version + "-DEV-" +  System.getenv('TRAVIS_BUILD_NUMBER') : version)
+version = "${config.rtg.version}"
+group= "org.teamrtg"
+archivesBaseName = "Realistic-Terrain-Generation"
+
+
+//Java Version
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//Compile against UTF-8
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = ref.mcf_version + '-1.7.10'
-    runDir = ref.run_dir
-    replace '@MOD_NAME@', ref.mod_name
-    replace '@MOD_ID@', ref.mod_id
-    replace '@MOD_VERSION@', versionName
-    replace '@MCF_VERSION@', ref.mcf_version
-    if (ref.mod_deps != "") replace '@MOD_DEPS@', ";" + ref.mod_deps
-    else replace '@MOD_DEPS@', ''
-    replaceIn 'ModInfo.java'
+    version = "${config.minecraft.version}-${config.forge.version}"
+    runDir = "eclipse"
 }
 
-dependencies {}
+idea { module { inheritOutputDirs = true } }
 
-processResources {
+configurations {
+    provided
+    embedded
+    compile.extendsFrom provided, embedded
+}
+
+repositories {
+	maven {
+		name = "gt"
+		url = "http://gregtech.overminddl1.com/"
+	}
+	maven {
+		name = "ic2"
+		url = "http://maven.ic2.player.to/"
+	}
+}
+
+sourceSets {
+    main {
+        java { srcDirs = ["$projectDir/src/main/Java"] }
+        resources { srcDirs = ["$projectDir/src/main/resources"] }
+    }
+}
+
+dependencies {	
+        
+	compile "mcp.mobius.waila:Waila:1.5.11-RC2-NONEI_1.7.10:dev"
+	compile "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
+	compile "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
+	compile "codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev"
+	compile "com.enderio.core:EnderCore:1.7.10-0.2.0.39_beta:dev"
+	compile "cofh:CoFHCore:1.7.10R3.0.4:dev"
+	compile "cofh:CoFHLib:1.7.10R3.0.3:dev"
+	
+}
+
+processResources
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-		expand ([
-			'modid':ref.mod_id,
-			'name':ref.mod_name,
-			'description':ref.mod_desc,
-			'version':ref.mod_version,
-			'mcversion':ref.mc_version,
-			'url':ref.mod_url,
-			'authorList':ref.mod_author,
-			'credits':ref.mod_creds,
-			'logoFile':ref.mod_logo,
-		])
-	}
-	from(sourceSets.main.resources.srcDirs) {exclude 'mcmod.info'}
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+	exclude '**/Thumbs.db'
 }
 
-def parseprops(File cfg) {
-    cfg.withReader {
-        def prop = new Properties()
-        prop.load(it)
-        return (new ConfigSlurper().parse(prop))
+jar {
+    archiveName = archivesBaseName + "-" + version + ".jar"
+    manifest {
+        //attributes 'FMLCorePlugin': 'gtPlusPlus.preloader.asm.Preloader_FMLLoadingPlugin'
+        //attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
 
-// run 'gradle -DEBUG [runClient|runServer]' for a debug session
-allprojects {
-    tasks.withType(JavaExec) {
-        jvmArgs "-Xms2G", "-Xmx4G"
-        if (System.getProperty('EBUG', 'false') == 'true') {
-            jvmArgs '-agentlib:jdwp=transport=dt_socket,address=localhost:5005,server=y,suspend=y'
-        }
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    manifest {
+        //attributes 'FMLCorePlugin': 'gtPlusPlus.preloader.asm.Preloader_FMLLoadingPlugin'
+        //attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
+}
+
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    manifest {
+        //attributes 'FMLCorePlugin': 'gtPlusPlus.preloader.asm.Preloader_FMLLoadingPlugin'
+        //attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
+artifacts {
+    archives devJar
+	archives sourceJar
 }
