@@ -258,27 +258,6 @@ public class RealisticBiomeBase
                 }
             }
         }
-        if (!villageBuilding) {
-            
-            if (gen) {
-                
-                int i2 = worldX+  rand.nextInt(16);// + 8;
-                int i8 = worldZ+  rand.nextInt(16);// + 8;
-                int l4 = worldObj.getHeightValue(i2, i8);
-                
-                if (MathUtils.randInt(0, 10) > 2) {
-                	 if (l4 >= 62) {
-                         net.alkalus.debug.core.Logger.INFO("Generating Lava Surface Lake");                         
-                         (new WorldGenPond(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
-                     }
-                }
-                //Surface lakes.
-				/*if (rand.nextInt(lavaSurfaceLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaSurfaceLakeChance) == 1)) {
-				
-				   
-				}*/
-            }
-        }
         
         if (ConfigRTG.generateDungeons) {
             
