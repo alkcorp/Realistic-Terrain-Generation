@@ -106,7 +106,7 @@ public class RealisticBiomeBOPBase extends RealisticBiomeBase
 		super(config, b, riverbiome, t, s);
 		
         this.waterSurfaceLakeChance = 0;
-        this.lavaSurfaceLakeChance = 0;
+        this.lavaSurfaceLakeChance = 1;
 	}
 	
 	public static void addBiomes()
