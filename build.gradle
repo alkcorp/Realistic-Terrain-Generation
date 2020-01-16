@@ -1,7 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
-		jcenter()	
         //maven {
         //    name = "forge"
         //    url = "http://files.minecraftforge.net/maven"
@@ -9,7 +7,11 @@ buildscript {
 		maven {
 			name = "gt"
 			url = "https://gregtech.overminddl1.com/"
-		}	
+		}		
+		maven {  
+			name = "Google"
+			url "https://maven.google.com"  
+		}
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -17,6 +19,8 @@ buildscript {
 		maven {
 			url = "https://plugins.gradle.org/m2/"
 		}
+        mavenCentral()
+		jcenter()	
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
