@@ -95,7 +95,7 @@ repositories {
 
 sourceSets {
     main {
-        java { srcDirs = ["$projectDir/src/main/Java"] }
+        java { srcDirs = ["$projectDir/src/main/java"] }
         resources { srcDirs = ["$projectDir/src/main/resources"] }
     }
 }
