@@ -120,7 +120,7 @@ public class RealisticBiomeBase
         riverBiome = river;
         
         waterSurfaceLakeChance = 10;
-        lavaSurfaceLakeChance = 0; // Disabled.
+        lavaSurfaceLakeChance = 10; // Disabled.
         
         waterUndergroundLakeChance = 1;
         lavaUndergroundLakeChance = 1;
@@ -235,33 +235,27 @@ public class RealisticBiomeBase
                 int l4 = RandomUtil.getRandomInt(rand, 1, 50);
                 int i8 = worldZ+ rand.nextInt(16);// + 8;
                 
-                if (rand.nextInt(lavaUndergroundLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaUndergroundLakeChance) == 1)) {
-                    
+                if (rand.nextInt(lavaUndergroundLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaUndergroundLakeChance) == 1)) {                    
                     (new WorldGenLakes(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
                 }
             }
         }
         
         // Surface lava lakes.
-        if (!villageBuilding) {
+        if (ConfigRTG.enableLavaSurfaceLakes&&!villageBuilding) {
             
-            if (gen) {
+            if (gen && (lavaSurfaceLakeChance > 0)) {
                 
-                int i2 = worldX+  rand.nextInt(16);// + 8;
-                int i8 = worldZ+  rand.nextInt(16);// + 8;
+                int i2 = worldX + rand.nextInt(16);// + 8;
+                int i8 = worldZ+ rand.nextInt(16);// + 8;
                 int l4 = worldObj.getHeightValue(i2, i8);
                 
-                if (MathUtils.randInt(0, 10) > 2) {
-                	 if (l4 >= 62) {
-                         net.alkalus.debug.core.Logger.INFO("Generating Lava Surface Lake");                         
-                         (new WorldGenPond(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
-                     }
-                }
                 //Surface lakes.
-				/*if (rand.nextInt(lavaSurfaceLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaSurfaceLakeChance) == 1)) {
-				
-				   
-				}*/
+                if (rand.nextInt(lavaSurfaceLakeChance) == 0 && (RandomUtil.getRandomInt(rand, 1, ConfigRTG.lavaSurfaceLakeChance) == 1)) {
+                    if (l4 >= 62) {                        
+                        (new WorldGenPond(Blocks.lava)).generate(worldObj, rand, i2, l4, i8);
+                    }
+                }
             }
         }
         
